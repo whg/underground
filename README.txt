@@ -1,0 +1,6 @@
+
+usage: python main.py <file_to_read>
+
+you can try first20raw.csv if you want to only process 20 journeys...
+
+...the algorithm is pretty slow...
