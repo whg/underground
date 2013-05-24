@@ -25,6 +25,7 @@ class Journey:
 		self.sjns = sjns
 # 		print "yo"
 
+
 class JourneyPlanner:
 	'''read files with data and then can plan a route for you
 	this is a slightly weird journey planner as i wanted to preserve
@@ -35,7 +36,8 @@ class JourneyPlanner:
 		self.lines = dict()
 		self.stations = dict()
 		self.loadstationdata()
-	
+		self.shortestlen = 0
+
 	def loadstationdata(self):
 		#read the line files, and load the data
 		with open("./data/line_names", 'r') as f:	
@@ -84,14 +86,21 @@ class JourneyPlanner:
 			for station in self.lines[line]:
 				if station not in journey and line not in journey:
 					
-					#we need a premature get out, so max 2 changes
+					#hack 1: max 2 changes
 					if len(journey) > 3:
 						continue
-					
+						
 					new = self.findjourney(station, end, journey+[line])
 					for j in new:
 						if j not in routes:
 							routes.append(j)
+							
+							#hack 2: if this has fewer stops than what we have seen before,
+							#use it, this is not optimal but creates a substantial speed increase
+							l = len(j)
+							if l < self.shortestlen:
+								return [j]
+							self.shortestlen = l
 						
 		return routes
 		
@@ -114,8 +123,10 @@ class JourneyPlanner:
 		routeswd = self.findjourney(source, dest)	
 		
 # 		print routeswd
+# 		for i in routeswd: print len(i), i
 		
-		#now remove the duplicates
+		#now remove the duplicates, i.e:
+		#['Gloucester Road', 'District5', 'Earls Court', 'District3', 'Acton Town']
 		routes = []
 		for r in routeswd:
 			lns = [l[0:-1] for l in r[1::2]]
@@ -178,11 +189,13 @@ class JourneyPlanner:
 		paths.sort(key=lambda x: x.rank)
 		paths = paths[0:3]
 		
+# 		if len(paths) > print "\t", paths[0].route
+		
 		#now we have a sorted list
 		#split the journey into all the seperate lines
 		
 		if len(paths) < 1:
-			return []
+			return False
 		else:
 			return paths[0].sjns
 		if len(paths) == 1:

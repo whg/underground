@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 	
-import math
+import math, random
+
+rsizes = [0 for i in range(50)]
+
+def print_end(): 
+	for i, e in enumerate(rsizes):
+		print i, e
 
 class Vector:
 	'''very simple vector class, doing just what we need'''
@@ -47,7 +53,12 @@ class Vector:
 		elif self.x == 0.0 and self.y == 0.0:
 			return 5
 		return math.acos(self.dot(v)/(self.mag()*v.mag()))
-
+		
+	def addnoise(self, sigma=0.5):
+		'''add gaussian noise to both components'''
+		self.x+= random.gauss(0, sigma)
+		self.y+= random.gauss(0, sigma)
+		return self
 
 class RouteFinder:
 	def __init__(self):
@@ -65,7 +76,7 @@ class RouteFinder:
 	def findroute(self, journeys, stime, etime):
 		
 		total_time = etime - stime
-		if total_time == 0:
+		if not journeys or total_time == 0:
 			return False
 
 
@@ -75,10 +86,9 @@ class RouteFinder:
 			for s, e in zip(journey[:-1], journey[1:]):
 				total_dist+= (self.stations[s] - self.stations[e]).mag()
 		
-		
+		if total_dist == 0.0: return False
 		speed = total_dist/total_time
-		if speed == 0.0:
-			return False
+
 			
 		last = Vector()
 		points = []
@@ -100,15 +110,15 @@ class RouteFinder:
 				#if the direction of the new direction is 
 				#almost the same as the old, replace the old with new
 				try:
-					if direction.angle(last) < 0.1:
-						if len(p) > 0: 
-							p[-1] = (self.stations[e], dist/speed+stime)
-						else:
-							p.append((self.stations[e], dist/speed+stime))
+					if direction.angle(last) < 0.1 and len(p) > 0:
+# 						if len(p) > 0: 
+						p[-1] = (self.stations[e], dist/speed+stime)
+# 						else:
+# 							p.append((self.stations[e], dist/speed+stime))
 					else:
-						p.append((self.stations[e], dist/speed+stime))
-				except ValueError:
-					return False			
+						p.append((self.stations[e].addnoise(), dist/speed+stime))
+				except:
+					return False		
 
 				last = direction
 			points.append(p)
@@ -118,19 +128,21 @@ class RouteFinder:
 		for route, line in zip(points, lines):
 			result = ["0.0f:0.0f,0.0f" for i in range(12)]
 			t = stime
+# 			print route
+			rsizes[len(route)]+= 1
+			if len(route) > 12:
+# 				print "* * * * * * JOURNEY TOO LONG * * * * * * ", "(%i)" % (len(result))
+				return False
+
 			for i, point in enumerate(route):
-				if i > 11:
-					print "* * * * * * JOURNEY TOO LONG * * * * * * ", len(result)
-					return False
-				elif i == 0:
-					continue
-# 				print point[0]
-				result[i-1] = "%.2ff:%.2ff,%.2ff" % (point[1], point[0].x, point[0].y)
+				if i > 0:
+					result[i-1] = "%.2ff:%.2ff,%.2ff" % (point[1], point[0].x, point[0].y)
 			
 			try:
 				strres = "%i|%.1ff:%.1ff,%.1ff>%s" % (line, route[0][1], route[0][0].x, route[0][0].y, ";".join(result))
 				results.append(strres)
-			except:
+			except Exception as e:
+				print 2, e
 				return False
 			
 		
