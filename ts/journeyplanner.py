@@ -116,19 +116,6 @@ class JourneyPlanner:
 		elif line == "Piccadilly": return 8
 		elif line == "Victoria": return 9
 		elif line == "Waterloo&City": return 10
-
-	def decodeline(line):
-		if line == 0: return "Bakerloo"
-		elif line == 1: return "Central"
-		elif line == 2: return "Circle"
-		elif line == 3: return "District"
-		elif line == 4: return "Hammersmith&City"
-		elif line == 5: return "Jubilee"
-		elif line == 6: return "Metropolitan"
-		elif line == 7: return "Northern"
-		elif line == 8: return "Piccadilly"
-		elif line == 9: return "Victoria"
-		elif line == 10: return "Waterloo&City"
 	
 	def journey(self, source, dest):
 		
@@ -211,7 +198,7 @@ class JourneyPlanner:
 		if len(paths) < 1:
 			return False
 		else:
-			print paths[0].sjns
+		#	print paths[0].sjns # 
 			return paths[0].sjns
 		if len(paths) == 1:
 			return paths[0].stops
