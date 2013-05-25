@@ -198,7 +198,7 @@ class JourneyPlanner:
 		if len(paths) < 1:
 			return False
 		else:
-		#	print paths[0].sjns # 
+			print paths[0].stops
 			return paths[0].sjns
 		if len(paths) == 1:
 			return paths[0].stops

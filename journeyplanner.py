@@ -12,46 +12,7 @@ class JourneyPlanner:
 
 	def __init__(self):
 		self.shortestlen = 0
-		
-	# def __init__(self):			
-	# 	self.lines = dict()
-	# 	self.stations = dict()
-	# 	self.loadstationdata()
-	# 	self.shortestlen = 0
 
-	# def loadstationdata(self):
-	# 	#read the line files, and load the data
-	# 	with open("./data/line_names", 'r') as f:	
-	# 		line_names = [l.strip() for l in f.readlines()]
-			
-	# 		for line in line_names:
-	# 			with open("./data/"+line, 'r') as g:
-	# 				self.lines[line] = [l.strip() for l in g.readlines()]
-		
-	# 	#work out which lines go through each station	
-	# 	for l, sts in self.lines.iteritems():
-	# 		for station in sts:
-	# 			if station in self.stations:
-	# 				self.stations[station].lines.append(l)
-	# 			else:
-	# 				self.stations[station] = Station(station, [l])
-		
-	# 	#add the positions to each station
-	# 	with open("data/stations_position", 'r') as f:
-	# 		for line in f:
-	# 			st, p = line.split(':')
-	# 			x,y,z = p.split(',')
-	# 			if st in self.stations:
-	# 				self.stations[st].loc = (float(x), float(y))
-		
-	# #this helper calculates distance between two stations
-	# def dist(self, s1, s2):
-	# 	x = (self.stations[s1].loc[0] - self.stations[s2].loc[0])**2
-	# 	y = (self.stations[s1].loc[1] - self.stations[s2].loc[1])**2
-	# 	#no need for expensive square root....
-	# 	return (x+y)*1000 #mult by 1000 for easy reading
-	
-	
 	# FINDROUTE
 	#returns all possible paths with a maximum of 2 changes
 	def findjourney(self, start, end, journey=[]):
@@ -150,7 +111,7 @@ class JourneyPlanner:
 		if len(paths) < 1:
 			return False
 		else:
-			print paths[0].sjns
+			print paths[0].stops
 			return paths[0].sjns
 		if len(paths) == 1:
 			return paths[0].stops

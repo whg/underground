@@ -36,7 +36,7 @@ with open("./data/line_names", 'r') as f:
                     station = lines[line][i]
                     position_indices[line][station] = j
                     i+= 1
-                positions[line].append(p)
+                positions[line].append(Vector(p))
                 
             
     #work out which lines go through each station	
@@ -66,8 +66,8 @@ def dist(s1, s2):
 
 
 def encodeline(linename):
-    return lines.index(linename)
+    return linenames.index(linename)
 
 def decodeline(linenumber):
-    return lines[linenumber]
+    return linenames[linenumber]
 
