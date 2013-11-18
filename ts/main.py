@@ -4,7 +4,7 @@ import sys
 
 from journeyplanner import JourneyPlanner
 from routefinder import *
-import time
+import time, sys
 
 beg = time.clock()
 
@@ -28,14 +28,17 @@ with open(sys.argv[1], 'r') as f:
 			i+= 1
 		done+= 1
 
+		sys.stdout.write("\rdone: %d, failed: %d, fail rate: %2.2f%%" % (done, done-i, (done-i)/float(done)))
+		sys.stdout.flush()
+
 
 
 # print_end()
-
+sys.stdout.write("\n")
 result.close()
 # with open("distr", 'w') as f:
 # 	for i,j in enumerate(distr):
 # 		f.write("%i,%i\n" % (i, j))
 	
 # print "completed in %.2fs" % ()
-print "-\n%i journeys in %.2fs, completed %i (failed %i)" % (done, (time.clock() - beg), i, done-i)
+print "-\ndone in %2.2f" % ((time.clock() - beg))

@@ -7,8 +7,7 @@ from util import *
 class JourneyPlanner:
 	'''read files with data and then can plan a route for you
 	this is a slightly weird journey planner as i wanted to preserve
-	the lines used in a journey, so it's not truly a graph we working with
-	'''
+	the lines used in a journey, so it's not truly a graph we working with'''
 
 	def __init__(self):
 		self.shortestlen = 0
@@ -45,7 +44,7 @@ class JourneyPlanner:
 							self.shortestlen = l
 						
 		return routes
-	
+
 	
 	def journey(self, source, dest):
 		
@@ -102,16 +101,13 @@ class JourneyPlanner:
 		#sort according to rank
 		paths.sort(key=lambda x: x.rank)
 		paths = paths[0:3]
-		
-# 		if len(paths) > print "\t", paths[0].route
-		
 		#now we have a sorted list
 		#split the journey into all the seperate lines
 		
 		if len(paths) < 1:
 			return False
 		else:
-			print paths[0].stops
+			#print paths[0].stops
 			return paths[0].sjns
 		if len(paths) == 1:
 			return paths[0].stops

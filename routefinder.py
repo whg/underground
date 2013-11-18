@@ -5,22 +5,14 @@ from util import Vector
 import data
 
 rsizes = [0 for i in range(50)]
+res = []
 
 def print_end(): 
 	for i, e in enumerate(rsizes):
 		print i, e
 
 class RouteFinder:
-	# def __init__(self):
-	# 	self.stations = dict()
-		
-	# def loaddata(self):
-	# 	with open("data/map_pos", 'r') as f:
-	# 		for line in f:
-	# 			st, p = line.split(':')
-	# 			x,y = p.split(',')
-	# 			self.stations[st] = Vector(float(x), float(y))
-	
+
 	#this returns the result in *string* format, not numbers...
 	def findroute(self, journeys, stime, etime):
 		
@@ -31,45 +23,26 @@ class RouteFinder:
 
 		#find the total distance first
 		total_dist = 0
-		# for line, journey in journeys:
-		# 	for s, e in zip(journey[:-1], journey[1:]):
-		# 		total_dist+= (data.positions[s] - data.positions[line][e]).mag()
-
 		for line, journey in journeys:
 
-			start_station, end_station = journey[0], journey[-1]
-			start_index = data.position_indices[line][start_station]
-			end_index = data.position_indices[line][end_station]
-			#print start_index, end_index
-
-			start = min(start_index, end_index)
-			end = max(start_index, end_index)
-			#print start, end
+			start, end = data.getstartend(line, journey[0], journey[-1])
 			
-			for i in range(start, end+1):
+			for i in range(start, end):
 				s, e = i, i+1 #intermediate start, end
 				total_dist+= (data.positions[line][s] - data.positions[line][e]).mag()
 				
 		if total_dist == 0.0:
-			print "NO 1"
+#			print "NO 1"
 			return False
 		speed = total_dist/total_time
 
 			
-		last = Vector()
-		points = []
-		dist = 0
-		lines = []
+		last, dist = Vector(), 0
+		linesandpoints = []
 		
-# 		print zip(journey[:-1], journey[1:])
 		for line, journey in journeys:
 			
-
-			start_station, end_station = journey[0], journey[-1]
-			start_index = data.position_indices[line][start_station]
-			end_index = data.position_indices[line][end_station]
-			start = min(start_index, end_index)
-			end = max(start_index, end_index)
+			start, end = data.getstartend(line, journey[0], journey[-1])
 
 			p = [(data.positions[line][start], dist/speed+stime)]
 			
@@ -94,48 +67,35 @@ class RouteFinder:
 
 				last = direction
 			
-			lines.append(line)
-# 			for s, e in zip(journey[:-1], journey[1:]): #s = start, e = end
-# 				if s == e:
-# 					continue
-
-# 				direction = self.stations[e] - self.stations[s] 
-# 				dist+= direction.mag()
-				
-				
-# 				#if the direction of the new direction is 
-# 				#almost the same as the old, replace the old with new
-# 				try:
-# 					if direction.angle(last) < 0.1 and len(p) > 0:
-# # 						if len(p) > 0: 
-# 						p[-1] = (self.stations[e], dist/speed+stime)
-# # 						else:
-# # 							p.append((self.stations[e], dist/speed+stime))
-# 					else:
-# 						p.append((self.stations[e].addnoise(), dist/speed+stime))
-# 				except:
-# 					return False		
-
-# 				last = direction
-			points.append(p)
+			linesandpoints.append((line, p))
 		
 		
 		results = []
+
+		#data = 1 + 3 + (12*3) = 
 		
-		for route, line in zip(points, lines):
+		for line, route in linesandpoints:
+
+
 			result = ["0.0f:0.0f,0.0f" for i in range(12)]
 			t = stime
 # 			print route
 			rsizes[len(route)]+= 1
-			if len(route) > 12:
-# 				print "* * * * * * JOURNEY TOO LONG * * * * * * ", "(%i)" % (len(result))
-				return False
+			
+			# if len(route) > 12:
+			# 	print "* * * * * * JOURNEY TOO LONG * * * * * * ", "(%i)" % (len(result))
+			# 	# print "{", route[0][0].x , ",", route[0][0].y , "},"
+			# 	# for i, point in enumerate(route):
+			# 	# 	if i > 0:
+			# 	# 		print "{", point[0].x , ",", point[0].y , "},"
 
-			print "{", route[0][0].x , ",", route[0][0].y , "},"
+			# 	return False
+			
+			
 			for i, point in enumerate(route):
-				if i > 0:
+				if i > 0 and not i > 11:
 					result[i-1] = "%.2ff:%.2ff,%.2ff" % (point[1], point[0].x, point[0].y)
-					print "{", point[0].x , ",", point[0].y , "},"
+					#print "{", point[0].x , ",", point[0].y , "},"
 			
 			#try:
 			strres = "%i|%.1ff:%.1ff,%.1ff>%s" % (data.encodeline(line[:-1]), route[0][1], route[0][0].x, route[0][0].y, ";".join(result))
