@@ -75,7 +75,7 @@ def getstartend(line, start_station, end_station):
     start_index = position_indices[line][start_station]
     end_index = position_indices[line][end_station]
     
-    start = min(start_index, end_index)
-    end = max(start_index, end_index)
+    # start = min(start_index, end_index)
+    # end = max(start_index, end_index)
 
-    return (start, end)
+    return (start_index, end_index)
