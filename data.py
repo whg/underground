@@ -79,3 +79,8 @@ def getstartend(line, start_station, end_station):
     # end = max(start_index, end_index)
 
     return (start_index, end_index)
+
+#add postions to stations
+for line, _stations in position_indices.items():
+    for station, index in _stations.items():
+        stations[station].pos = positions[line][index]

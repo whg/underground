@@ -5,6 +5,10 @@ class Station:
 		self.name = name
 		self.lines = lines
 		self.loc = loc
+        self.pos = None
+
+    def __repr__(self):
+        return '%s: %s' % (self.name, self.pos)
 
 class Journey:
 	def __init__(self, route=[], stops=[], changes=0, dist=0, sjns=[]):
