@@ -83,4 +83,5 @@ def getstartend(line, start_station, end_station):
 #add postions to stations
 for line, _stations in position_indices.items():
     for station, index in _stations.items():
-        stations[station].pos = positions[line][index]
+        p = positions[line][index]
+        stations[station].pos = (p.x, p.y)
