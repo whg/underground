@@ -20,13 +20,13 @@ with open("./data/line_names", 'r') as f:
     line_names = [l.strip() for l in f.readlines()]
     
     for line in line_names:
-        with open("./data/" + line, 'r') as g:
+        with open("./data/lines/%s.txt" % line, 'r') as g:
             lines[line] = [l.strip() for l in g.readlines()]
 
         #postions: positions of all points in line, including between
         #stations position_indices: index of each station in points,
         #we need this because of the intermediate points
-        with open("./data/map/" + line, 'r') as g:
+        with open("./data/map/%s.txt" % line, 'r') as g:
             points = eval('[' + g.read() + ']')
             position_indices[line] = dict()
             positions[line] = []
@@ -72,8 +72,12 @@ def decodeline(linenumber):
     return linenames[linenumber]
 
 def getstartend(line, start_station, end_station):
-    start_index = position_indices[line][start_station]
-    end_index = position_indices[line][end_station]
+    try:
+        start_index = position_indices[line][start_station]
+        end_index = position_indices[line][end_station]
+    except KeyError:
+        print line, start_station, end_station
+        raise KeyError
     
     # start = min(start_index, end_index)
     # end = max(start_index, end_index)
@@ -85,3 +89,24 @@ for line, _stations in position_indices.items():
     for station, index in _stations.items():
         p = positions[line][index]
         stations[station].pos = (p.x, p.y)
+
+
+
+_line_colors = {
+    'Bakerloo': (153, 90, 9),
+    'Central': (255, 73, 0),
+    'Circle': (255, 230, 0),
+    'District': (0, 170, 107),
+    'Hammersmith&City': (255, 128, 161),
+    'Jubilee': (133, 134, 136),
+    'Metropolitan': (121, 0, 43),
+    'Northern': (36, 36, 36),
+    'Piccadilly': (32, 0, 161),
+    'Victoria': (0, 159, 228),
+    'Waterloo&City': (77, 207, 186),
+}
+
+def line_colour(line):
+    v = _line_colors[line]
+    return [w/255.0 for w in v]
+    
